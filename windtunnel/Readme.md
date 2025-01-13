@@ -254,7 +254,7 @@ You got it to work? Well done!
 <!-- Licensing and copyright stuff below -->
 <br>
 <a href="http://www.epcc.ed.ac.uk">
-![EPCC logo](../imgs/EPCC_logo2.png)
+<img src="../imgs/EPCC_logo2.png" alt="EPCC logo" />
 </a><br/>
 <a rel="license" href="https://opensource.org/licenses/BSD-3-Clause">
 <img alt="BSD-3 Clause License" style="border-width:0" 
