@@ -52,7 +52,7 @@ class AbstractUI(wx.Frame):
             self.CurrentFrame=0
 
             #Start timer (argument to .Start is in milliseconds)
-            self.timer.Start(self.refreshrate*1000)
+            self.timer.Start(int(self.refreshrate*1000))
 
 
     #stop the simulation

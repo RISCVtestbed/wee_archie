@@ -27,14 +27,16 @@ bgc2=wx.Colour(35,35,35)
 
 class Takeoff(wx.Frame):
     def __init__(self, parent,title,size,c_lift,c_drag):
-        super(Takeoff, self).__init__(parent, title=title,size=size,style=wx.FRAME_FLOAT_ON_PARENT|wx.MINIMIZE_BOX | wx.MAXIMIZE_BOX | wx.RESIZE_BORDER | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
+        super(Takeoff, self).__init__(parent, title=title,size=size,style=wx.FRAME_FLOAT_ON_PARENT|wx.MINIMIZE_BOX | wx.MAXIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN | wx.RESIZE_BORDER)
+        
+        #wx.RESIZE_BORDER
 
         self.parent=parent
 
         parent_pos=self.GetPositionTuple()
 
         self.db=Dashboard(self,"Dashboard",(parent_pos[0]+600,parent_pos[1]+900),((840,270)))
-        self.db.Show()
+        #self.db.Show()
 
         #get lift and drag coefficients from input
         self.c_lift=c_lift
@@ -72,14 +74,14 @@ class Takeoff(wx.Frame):
         self.planeimg = wx.Image("plane2.png",wx.BITMAP_TYPE_PNG)
         self.planeimg.Rescale(158,50)
         self.plane = wx.StaticBitmap(self, -1, wx.BitmapFromImage(self.planeimg))
-        self.plane.SetPosition((self.x, self.y))
+        self.plane.SetPosition((int(self.x), int(self.y)))
 
         #load image of water (used to cover sinking plane)
         self.waterlevel=580
 
         h20 = wx.Image("water2.png",wx.BITMAP_TYPE_PNG)
         self.water = wx.StaticBitmap(self, -1, wx.BitmapFromImage(h20))
-        self.water.SetPosition((-25,self.waterlevel))
+        self.water.SetPosition((-25,int(self.waterlevel)))
         self.water.SetPosition((-25,-1000))
 
         #load image of raft
@@ -152,7 +154,7 @@ class Takeoff(wx.Frame):
         #integrate movement of plane (and any other objects (i.e. liferafts))
         self.Integrate()
 
-        self.plane.SetPosition((self.x,self.y))
+        self.plane.SetPosition((int(self.x),int(self.y)))
         #if self.x < -200:
             #print("Plane left for its travels")
             #self.timer.Stop()
@@ -167,7 +169,7 @@ class Takeoff(wx.Frame):
 
         if (not self.crash):
 
-            self.db.update((self.db.crit,self.db.speed,self.db.al_hun,self.db.al_ten,self.db.vm),(self.crit,self.vx,0,0,-125),(wx.RED,wx.GREEN,'GREY','LIGHT GREY',wx.CYAN))
+            #self.db.update((self.db.crit,self.db.speed,self.db.al_hun,self.db.al_ten,self.db.vm),(self.crit,self.vx,0,0,-125),(wx.RED,wx.GREEN,'GREY','LIGHT GREY',wx.CYAN))
 
             #calculating
             thrust2=thrust
@@ -195,7 +197,7 @@ class Takeoff(wx.Frame):
                 hun=self.altitude-ten
 
                 #-125 because of the rotated circle, could also put +500, does not change the sin/cos value
-                self.db.update((self.db.al_ten,self.db.al_hun,self.db.crit,self.db.speed,self.db.vm),(ten,hun,self.crit,self.vx,(self.vsp-125)),('LIGHT GREY','GREY',wx.RED,wx.GREEN,wx.CYAN))
+                #self.db.update((self.db.al_ten,self.db.al_hun,self.db.crit,self.db.speed,self.db.vm),(ten,hun,self.crit,self.vx,(self.vsp-125)),('LIGHT GREY','GREY',wx.RED,wx.GREEN,wx.CYAN))
         
                 #attitude indicator (not so true, should be at ~47 degrees)
                 self.i+=1
@@ -206,14 +208,14 @@ class Takeoff(wx.Frame):
 
                 if not self.takeoff:
                     print("Takeoff :)")
-                    self.planeimg=self.planeimg.Rotate(-np.pi/12,wx.Point(0.,0.))
+                    self.planeimg=self.planeimg.Rotate(-np.pi/12,wx.Point(0,0))
                     self.y -= 10.
                     self.plane.SetBitmap(wx.BitmapFromImage(self.planeimg))
                     self.takeoff=True
-                    if self.parent != None:
-                        self.parent.logfile.write("    Takeoff = True\n")
-                        self.parent.logfile.write("    Runway Dist= "+str((self.x0-self.x)/scale)+" m \n")
-                        self.parent.logfile.flush()
+                    #if self.parent != None:
+                    #    self.parent.logfile.write("    Takeoff = True\n")
+                    #    self.parent.logfile.write("    Runway Dist= "+str((self.x0-self.x)/scale)+" m \n")
+                    #    self.parent.logfile.flush()
 
             #if the plane overruns the runway
             if ((self.x0-self.x)/scale > lmax) and not self.takeoff:
@@ -241,7 +243,7 @@ class Takeoff(wx.Frame):
             else:
                 self.vsp=vs 
 
-            self.db.update((self.db.al_hun,self.db.al_ten,self.db.crit,self.db.speed,self.db.vm),(0,0,self.crit,self.vx,(self.vsp-125)),('GREY','LIGHT GREY',wx.RED,wx.GREEN,wx.CYAN))
+            #self.db.update((self.db.al_hun,self.db.al_ten,self.db.crit,self.db.speed,self.db.vm),(0,0,self.crit,self.vx,(self.vsp-125)),('GREY','LIGHT GREY',wx.RED,wx.GREEN,wx.CYAN))
 
             if self.y > 500:
                 self.y=500
@@ -251,7 +253,7 @@ class Takeoff(wx.Frame):
                 for raft in self.rafts:
                     xp=self.x+50.
                     yp=self.y+30.
-                    raft.SetPos((xp,yp))
+                    raft.SetPos((int(xp),int(yp)))
 
 
         #once/if the plane has hit the sea
@@ -273,7 +275,7 @@ class Takeoff(wx.Frame):
                 self.db.dashRr.SetPosition((-210,-270))
 
             #if 50 time units have passed, start moving the rafts
-            if self.counter>50:
+            if self.counter>50 and self.counter<150:
                 for raft in self.rafts:
                     raft.Move()
 
@@ -283,7 +285,7 @@ class Takeoff(wx.Frame):
                 self.y = self.y+ self.vy*dt
 
                 self.waterlevel=self.waterlevel-3.*self.vy*dt
-                self.water.SetPosition((-25,self.waterlevel))
+                self.water.SetPosition((-25,int(self.waterlevel)))
 
                 if self.waterlevel < 510:
                     self.timer.Stop()
@@ -307,7 +309,7 @@ class FlightIns:
     def DrawArrow(self,area,colour):
         ar=area
         ar.SetPen(wx.Pen(colour,width=2,style=wx.SOLID))
-        ar.DrawLine(self.ctr[0],self.ctr[1],self.end[0],self.end[1])
+        ar.DrawLine(int(self.ctr[0]),int(self.ctr[1]),int(self.end[0]),int(self.end[1]))
 
     
 
@@ -330,7 +332,7 @@ class LifeRaft:
 
         x+=xp
         y+=yp
-        self.pos=(x,y)
+        self.pos=(int(x),int(y))
         #self.UpdatePosition
 
     #move the raft offscreen
@@ -349,17 +351,17 @@ class LifeRaft:
         x+=(dx+random.gauss(0.,5.))*0.01
         y+=(dy+random.gauss(0.,5.))*0.01
 
-        self.pos=(x,y)
+        self.pos=(int(x),int(y))
 
         self.UpdatePosition()
 
 class Dashboard(wx.Frame):  
     def __init__(self, parent,title,pos,size):
-        super(Dashboard, self).__init__(parent, title=title,pos=pos,size=size,style=wx.FRAME_FLOAT_ON_PARENT | wx.CAPTION | wx.CLIP_CHILDREN)
+        super(Dashboard, self).__init__(parent, title=title,pos=pos,size=size,style=wx.STAY_ON_TOP | wx.CAPTION | wx.CLIP_CHILDREN)
 
         #load cockpit images
 
-        self.dashboard=wx.Image("dashboard_whole.png",wx.BITMAP_TYPE_PNG)
+        self.dashboard=wx.Image("dashboard_whole.png",wx.BITMAP_TYPE_PNG)        
 
         dashboard1l=wx.Image("dashboard_black_l.png",wx.BITMAP_TYPE_PNG)
         self.dashBl=wx.StaticBitmap(self,-1,wx.BitmapFromImage(dashboard1l))

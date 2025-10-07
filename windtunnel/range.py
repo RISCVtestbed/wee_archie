@@ -35,7 +35,7 @@ class Range(wx.Frame):
         if rangekm == None:
             rangekm=self.GetRange(c_lift,c_drag)
 
-        self.globe=wx.Image("map_new.png",wx.BITMAP_TYPE_PNG)
+        self.globe=wx.Image("map.png",wx.BITMAP_TYPE_PNG)
         #background = wx.StaticBitmap(self,-1,wx.BitmapFromImage(self.globe))
 
         self.colours=["None","None","None","None","None","None","None","None","None","None"]
@@ -60,8 +60,8 @@ class Range(wx.Frame):
 
         self.text="Speed = %d kmph\nFlight Time =  %d Hours %d Minutes \nRange = %d km" % (self.speed,hours,mins,self.range)
 
-        self.clock=wx.StaticText(self,wx.ID_ANY,pos=(75,425))
-        self.clock.SetForegroundColour(wx.WHITE)
+        #self.clock=wx.StaticText(self,wx.ID_ANY,pos=(75,425))
+        #self.clock.SetForegroundColour(wx.WHITE)
         
         self.tx=wx.StaticText(self,wx.ID_ANY,pos=(600,425))
 
@@ -81,14 +81,32 @@ class Range(wx.Frame):
         self.buffer=wx.EmptyBitmap(840,270)
         self.backbuffer=wx.EmptyBitmap(840,270)
 
-        self.fuel=FlightIns(((115,315)),((1,1)),60)
+        #self.fuel=FlightIns(((115,315)),((1,1)),60)                
 
         #range only expands & fuel only decreases if some range is displayed
         if(self.able):
-            self.timer=wx.Timer(self)
-            self.Bind(wx.EVT_TIMER,self.TimerCallback,self.timer)
-            self.counter=125
-            self.timer.Start(10)
+            #self.timer=wx.Timer(self)
+            #self.Bind(wx.EVT_TIMER,self.TimerCallback,self.timer)
+            #self.counter=125
+            #self.timer.Start(1)
+            #self.counter=0
+            #self.update(-25)
+            self.colours[0]="lime"
+            self.colours[1]="lime"
+            self.colours[2]="lime"
+            self.colours[3]="lime"
+            self.colours[4]="lime"
+            self.colours[5]="lime"
+            self.colours[6]="lime"
+            #self.Paint()
+            #self.update(-50)
+            self.colours[7]="orange"
+            self.colours[8]="orange"
+            #self.Paint()            
+            self.colours[9]="red"
+            self.update(-125)
+            self.Paint()
+            
         else:
             self.update(125)
 
@@ -148,8 +166,8 @@ class Range(wx.Frame):
             self.GetParent().RangeButton.Enable(True)
         except:
             pass
-        if(self.able):
-            self.timer.Stop()
+        #if(self.able):
+        #    self.timer.Stop()
         self.Destroy()
 
     def update(self,val):
@@ -159,8 +177,8 @@ class Range(wx.Frame):
         
         dc=wx.MemoryDC()
         dc.SelectObject(self.backbuffer)
-        self.fuel.CalcArrow(val)
-        self.fuel.DrawArrow(dc,wx.RED)
+        #self.fuel.CalcArrow(val)
+        #self.fuel.DrawArrow(dc,wx.RED)
 
         self.write(self.tx,self.text,15)      
         self.time_passed+=self.time_unit
@@ -170,7 +188,7 @@ class Range(wx.Frame):
             mins="0%d"%mins
         if hours<10:
             hours="0%d"%hours
-        self.write(self.clock,"%s:%s"%(hours,mins),20)
+        #self.write(self.clock,"%s:%s"%(hours,mins),20)
 
         self.buffer,self.backbuffer=self.backbuffer,self.buffer
         dc.SelectObject(wx.NullBitmap)
@@ -268,7 +286,7 @@ class Range(wx.Frame):
 
         #setup latitude and longitude grid
         res=1080
-        nph=res
+        nph=int(res)
         nth=int(res/2)
 
         lon=np.zeros(nph)
@@ -302,19 +320,38 @@ class Range(wx.Frame):
         acos=np.arccos
         dot=np.dot
 
+        #print((nph))
+        # print((nth))
+        #th_sin=[0]*nth
+        #th_cos=[0]*nth
+        #lon_cos=[0]*nph
+        #lon_sin=[0]*nph
+        #for i in range(nph):
+        #    lon_cos[i]=cos(lon[i])
+        #    lon_sin[i]=sin(lon[i])
+        #for j in range(nth):
+        #    th_sin[j]=sin(theta[j])
+        #    th_cos[j]=cos(theta[j])
+        #fa=open("angles.txt", "w")
+        fa=open("angles.txt", "r")
+        angle_lst=[]
+        for line in fa.readlines():
+            angle_lst.append(float(line))
+        fa.close()
         for i in range(nph):
             for j in range(nth):
-                r[0] = sin(theta[j])*cos(lon[i])
-                r[1] = sin(theta[j])*sin(lon[i])
-                r[2] = cos(theta[j])
+                #r[0] = th_sin[j] * lon_cos[i] #sin(theta[j])*cos(lon[i])
+                #r[1] = th_sin[j] * lon_sin[i] #sin(theta[j])*sin(lon[i])
+                #r[2] = th_cos[j] #cos(theta[j])
 
-                angle=acos(dot(r,r0))
+                angle= angle_lst[(i*nth)+j] #acos(dot(r,r0))
+                #fa.write(str(angle)+"\n")
 
                 if angle <= maxang:
                     
                     self.img[j][i]=angle/maxang
 
-
+        #fa.close()
         #colours range with given colourmap (timer)
     def Paint(self):
         mydpi=96.

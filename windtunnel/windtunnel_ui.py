@@ -374,7 +374,7 @@ class WindTunnelWindow(UI):
         self.buttonsizer.AddStretchSpacer(1)
         self.buttonsizer.Add(self.loadradio,0,wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND)
         self.buttonsizer.Add(self.radiobox,0,wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND)
-        self.buttonsizer.AddStretchSpacer(10.5)
+        self.buttonsizer.AddStretchSpacer(10)
 
         #self.buttonsizer.Add(self.TakeoffButton,0,wx.EXPAND)
         #self.buttonsizer.Add(self.RangeButton,0,wx.EXPAND)
