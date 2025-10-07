@@ -1,5 +1,6 @@
 FC = mpif90
-FFLAGS = -O3 -Wall -fopenmp# -g -fbounds-check #-ffixed-line-length-0 -ffpe-trap=invalid -fbounds-check
+MPI_DIR=/home/nick/demo/openmpi
+FFLAGS = -O3 -Wall -fopenmp -J$(MPI_DIR)/lib -L$(MPI_DIR)/lib -L/usr/lib/riscv64-linux-gnu/ # -g -fbounds-check #-ffixed-line-length-0 -ffpe-trap=invalid -fbounds-check
 
 module = vars.o
 mpimod = parallel.o
