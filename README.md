@@ -2,6 +2,10 @@
 
 This repository contains a number of activities designed to run on Wee Archie, a Raspberry-Pi parallel computer, designed to be taken to outreach events to demonstrate how parallel computers work and thus illustrate the underlying principles of supercomputers.
 
+## Environment
+
+Requires Python, wxpython, python3-vtkplotter, python3-vtk9, conda, python3-flask . Also requires OpenMPI
+
 <!-- Licensing and copyright stuff below -->
 <br>
 <a href="http://www.epcc.ed.ac.uk">
